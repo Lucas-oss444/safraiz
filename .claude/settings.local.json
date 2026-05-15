@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "PowerShell(npm *)",
+      "PowerShell(Set-ExecutionPolicy *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Projeto_safraiz\\\\safraiz-temp\" -Force | ForEach-Object { $_.Name })"
+    ]
+  }
+}
