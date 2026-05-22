@@ -154,15 +154,16 @@ export default function Inventario() {
   return (
     <div className="size-full bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 overflow-auto">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <Link
             to="/"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-[#800080] hover:text-[#600060] transition-colors"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-[#17194a] hover:text-[#274b62] transition-colors"
             aria-label="Voltar para a página inicial"
           >
             <ArrowLeft className="w-4 h-4" />
             Início
           </Link>
+          <img src="/logo.png" alt="Logo Safraiz" className="w-16 h-16 object-contain" />
         </div>
         <motion.div
           initial={{ opacity: 0, y: -20 }}

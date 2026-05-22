@@ -57,15 +57,16 @@ export default function Login() {
   return (
     <div className={`size-full flex items-center justify-center relative ${bgGradient}`} style={{ fontSize: `${tamanhoFonte}%` }}>
       <main id="conteudo-principal" className="max-w-md w-full mx-auto px-6 py-12 flex flex-col pt-24 md:pt-12">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <Link
             to="/"
-            className={`inline-flex items-center gap-1 text-sm font-semibold transition-colors focus:outline-none focus:ring-4 focus:ring-blue-900 rounded ${altoContraste ? 'text-yellow-400 hover:text-yellow-300' : 'text-[#800080] hover:text-[#600060]'}`}
+            className={`inline-flex items-center gap-1 text-sm font-semibold transition-colors focus:outline-none focus:ring-4 focus:ring-blue-900 rounded ${altoContraste ? 'text-yellow-400 hover:text-yellow-300' : 'text-[#17194a] hover:text-[#274b62]'}`}
             aria-label="Voltar para a página inicial"
           >
             <ArrowLeft className="w-4 h-4" alt="" />
             Início
           </Link>
+          <img src="/logo.png" alt="Logo Safraiz" className="w-16 h-16 object-contain" />
         </div>
 
         <motion.div

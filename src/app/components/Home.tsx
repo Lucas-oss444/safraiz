@@ -19,7 +19,7 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
   const textSecondary = altoContraste ? "text-gray-300" : "text-gray-700";
   const titleGradient = altoContraste
     ? "text-yellow-400"
-    : "text-[#800080]";
+    : "text-[#17194a]";
 
   return (
     <div className={`size-full flex items-center justify-center ${bgGradient} pt-16`} style={{ fontSize: `${tamanhoFonte}%` }}>
@@ -31,11 +31,15 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
         >
           <div className="flex justify-center mb-6">
             <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              animate={{ scale: [1, 1.04, 1] }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 1 }}
               className="inline-block"
             >
-              <Leaf className={`w-16 h-16 ${altoContraste ? 'text-yellow-400' : 'text-green-600'}`} />
+              <img
+                src="/logo.png"
+                alt="Logo Safraiz"
+                className="w-96 h-96 object-contain"
+              />
             </motion.div>
           </div>
 
@@ -64,12 +68,12 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
           {usuario ? (
             <div className={`${cardBg} ${altoContraste ? 'border-2 border-yellow-400' : 'border border-gray-200'} backdrop-blur-sm rounded-2xl p-8 shadow-lg h-full flex flex-col items-center`}>
               <div className="flex justify-center mb-4">
-                <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-purple-100 border border-purple-200 p-4 rounded-full"}>
-                  <User className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#800080]'}`} alt="" />
+                <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-[#d0dd3a]/30 border border-[#d0dd3a] p-4 rounded-full"}>
+                  <User className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} alt="" />
                 </div>
               </div>
               <h3 className={`text-xl font-bold mb-1 ${textColor}`}>Minha Conta</h3>
-              <p className={`text-sm font-medium mb-6 truncate max-w-full ${altoContraste ? 'text-yellow-300' : 'text-[#800080]'}`}>
+              <p className={`text-sm font-medium mb-6 truncate max-w-full ${altoContraste ? 'text-yellow-300' : 'text-[#17194a]'}`}>
                 {usuario.email}
               </p>
               <button
@@ -90,7 +94,7 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
               <div className={`${cardBg} ${altoContraste ? 'border-2 border-yellow-400' : 'border border-gray-200'} backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all focus-within:ring-4 focus-within:ring-blue-900 cursor-pointer h-full`}>
                 <div className="flex justify-center mb-4">
                   <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-gray-100 border border-gray-200 p-4 rounded-full"}>
-                    <User className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#800080]'}`} alt="" />
+                    <User className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} alt="" />
                   </div>
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${textColor}`}>Login</h3>
@@ -106,7 +110,7 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
               <div className={`${cardBg} ${altoContraste ? 'border-2 border-yellow-400' : 'border border-gray-200'} backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all focus-within:ring-4 focus-within:ring-blue-900 cursor-pointer h-full`}>
                 <div className="flex justify-center mb-4">
                   <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-gray-100 border border-gray-200 p-4 rounded-full"}>
-                    <Leaf className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#800080]'}`} alt="" />
+                    <Leaf className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} alt="" />
                   </div>
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${textColor}`}>Minha Produção</h3>
@@ -139,7 +143,7 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
             <div className={`${cardBg} ${altoContraste ? 'border-2 border-yellow-400' : 'border border-gray-200'} backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all focus-within:ring-4 focus-within:ring-blue-900 cursor-pointer h-full`}>
               <div className="flex justify-center mb-4">
                 <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-gray-100 border border-gray-200 p-4 rounded-full"}>
-                  <Rocket className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#800080]'}`} alt="" />
+                  <Rocket className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} alt="" />
                 </div>
               </div>
               <h3 className={`text-xl font-bold mb-3 ${textColor}`}>Suporte</h3>
@@ -153,7 +157,7 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
             <div className={`${cardBg} ${altoContraste ? 'border-2 border-yellow-400' : 'border border-gray-200'} backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all focus-within:ring-4 focus-within:ring-blue-900 cursor-pointer h-full`}>
               <div className="flex justify-center mb-4">
                 <div className={altoContraste ? "bg-yellow-400 p-4 rounded-full" : "bg-gray-100 border border-gray-200 p-4 rounded-full"}>
-                  <BookOpen className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#800080]'}`} alt="" />
+                  <BookOpen className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} alt="" />
                 </div>
               </div>
               <h3 className={`text-xl font-bold mb-3 ${textColor}`}>Aprender</h3>
@@ -163,6 +167,44 @@ export default function Home({ altoContraste, tamanhoFonte }: HomeProps) {
             </div>
           </Link>
         </motion.div>
+
+        {usuario && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row items-center gap-5 text-left ${
+              altoContraste
+                ? 'bg-gray-900 border-2 border-yellow-400'
+                : 'bg-[#17194a] border-l-8 border-[#d0dd3a]'
+            }`}
+            role="region"
+            aria-label="Dica de aprendizado"
+          >
+            <div className={`shrink-0 p-4 rounded-full ${altoContraste ? 'bg-yellow-400' : 'bg-[#d0dd3a]'}`}>
+              <BookOpen className={`w-8 h-8 ${altoContraste ? 'text-black' : 'text-[#17194a]'}`} />
+            </div>
+            <div className="flex-1">
+              <p className={`text-lg font-bold mb-1 ${altoContraste ? 'text-yellow-400' : 'text-[#d0dd3a]'}`}>
+                Olá, {usuario.nome.split(' ')[0]}! Que tal aprender algo novo hoje?
+              </p>
+              <p className={`text-sm ${altoContraste ? 'text-gray-300' : 'text-gray-300'}`}>
+                Temos dicas simples para você organizar melhor sua produção e vender com mais vantagem.
+              </p>
+            </div>
+            <Link
+              to="/aprender"
+              className={`shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-900 ${
+                altoContraste
+                  ? 'bg-yellow-400 text-black hover:bg-yellow-300'
+                  : 'bg-[#d0dd3a] text-[#17194a] hover:brightness-110'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              Ir para Aprender
+            </Link>
+          </motion.div>
+        )}
 
       </main>
     </div>

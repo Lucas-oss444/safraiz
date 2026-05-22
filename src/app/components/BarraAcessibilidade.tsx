@@ -100,6 +100,7 @@ export default function BarraAcessibilidade({
               Anotação: Botão dispara via JavaScript a abertura do widget flutuante oficial do VLibras.
             </div>
           </div>
+
         </div>
       </div>
 
@@ -127,8 +128,7 @@ export default function BarraAcessibilidade({
         </button>
 
         <div className="font-bold text-lg flex items-center gap-2">
-          <img src="https://images.unsplash.com/photo-1614036417651-1d4ee89fd593?w=32&h=32&fit=crop&q=80" alt="Logotipo Sistema de Gestão" className="w-8 h-8 rounded" />
-          <span>Gestão</span>
+          <span>Safraiz</span>
         </div>
 
         <button 
