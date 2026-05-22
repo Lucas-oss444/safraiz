@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Projeto_safraiz\\\\site\" -Recurse -Force | Select-Object FullName, PSIsContainer | ForEach-Object { if \\($_.PSIsContainer\\) { $_.FullName + \" [DIR]\" } else { $_.FullName } } | Sort-Object)",
+      "PowerShell(\\(Get-ChildItem \"C:\\\\Projeto_safraiz\\\\site\" -Recurse -Exclude \"node_modules\" -File | Measure-Object\\).Count)",
+      "PowerShell(\\(Get-ChildItem \"C:\\\\Projeto_safraiz\\\\site\" -Recurse -Exclude \"node_modules\" -File\\).Count; \\(Get-ChildItem \"C:\\\\Projeto_safraiz\\\\site\\\\src\\\\app\\\\components\\\\ui\" -File\\).Count)",
+      "PowerShell($sourceFiles = Get-ChildItem \"C:\\\\Projeto_safraiz\\\\site\\\\src\" -Recurse -File; Write-Host \"Total source files: $\\($sourceFiles.Count\\)\"; $sourceFiles | Group-Object -Property { [System.IO.Path]::GetExtension\\($_.Name\\) } | Select-Object -Property Name, Count)",
+      "PowerShell($sourceFiles = Get-ChildItem \"C:\\\\Projeto_safraiz\\\\site\\\\src\" -Recurse -File; $sourceFiles | Group-Object -Property { [System.IO.Path]::GetExtension\\($_.Name\\) } | Select-Object -Property Name, Count | Format-Table)",
+      "Bash(npx tsc *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(npm run *)",
+      "Bash(winget upgrade *)"
+    ]
+  }
+}
