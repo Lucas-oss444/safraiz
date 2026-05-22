@@ -2,13 +2,13 @@
 
 > Plataforma web para inclusão digital do agricultor familiar — controle de inventário e educação em gestão, pensada para quem mais precisa.
 
-Desenvolvido para o **Amazon Hacking**, hackathon acadêmico com foco em soluções para a Amazônia.
+Desenvolvido para o **Amazon Hacking**, desafio acadêmico com foco em soluções para a Amazônia.
 
 ---
 
 ## Sobre o Projeto
 
-Agricultores familiares da região amazônica perdem renda e produtividade por não terem ferramentas acessíveis para controlar o que produzem e o que vendem. O **Safraiz** nasce para resolver isso.
+Agricultores familiares de diversas regiões perdem renda e produtividade por não terem ferramentas acessíveis para controlar o que produzem e o que vendem. O **Safraiz** nasce para resolver isso.
 
 A plataforma foi projetada para usuários com **baixo letramento digital**: interface visual, textos simples, navegação mínima e compatível com dispositivos de baixo desempenho como Chromebooks.
 
@@ -20,7 +20,6 @@ A plataforma foi projetada para usuários com **baixo letramento digital**: inte
 - **Aprenda Gestão** — conteúdo educativo em formato de cards expansíveis explicando práticas básicas de organização da roça
 - **Interface acessível** — design limpo, texto grande, sem jargão técnico
 - **Alto contraste e ajuste de fonte** — suporte a usuários com necessidades visuais
-- **VLibras** — integração com o widget de Libras para acessibilidade de surdos
 
 ---
 
@@ -125,7 +124,7 @@ Configure as variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` no painel
 
 ## Contexto
 
-O projeto foi desenvolvido com base em **pesquisa de campo realizada em Jutaí (AM)**, onde foram coletados dados sobre as necessidades reais dos agricultores familiares da região. A solução prioriza simplicidade, leveza e acessibilidade em todas as decisões de design e tecnologia.
+O projeto foi desenvolvido com base em **pesquisa de campo realizada em Jutaí (PA)**, onde foram coletados dados sobre as necessidades reais dos agricultores familiares da região. A solução prioriza simplicidade, leveza e acessibilidade em todas as decisões de design e tecnologia.
 
 ---
 
