@@ -1,13 +1,14 @@
 import { motion } from "motion/react";
-import { ArrowLeft, Package, Plus, Search, Edit, Trash2, Info, X } from "lucide-react";
-import { Link } from "react-router";
-import { useState } from "react";
+import { ArrowLeft, Package, Plus, Search, Edit, Trash2, Info, X, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 
 interface Item {
-  id: number;
+  id: string;
   nome: string;
   quantidade: number;
-  categoria: string;
   status: "disponível" | "baixo estoque" | "esgotado";
   precoCusto: number;
   precoVenda: number;
@@ -22,35 +23,66 @@ type FormItem = {
 
 const FORM_VAZIO: FormItem = { nome: "", quantidade: "", precoCusto: "", precoVenda: "" };
 
-// Formata número como moeda brasileira: 1234.5 → "1.234,50"
 const moeda = (valor: number) =>
   valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-// Formata percentual brasileiro: 12.5 → "12,5"
 const pct = (valor: number) =>
   valor.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-// Converte string brasileira para número: "1.234,50" → 1234.5
 const parseBR = (val: string) =>
   parseFloat(val.replace(/\./g, "").replace(",", ".") || "0");
 
-// Formata número para exibição no campo de input de edição: 50 → "50,00"
 const inputMoeda = (valor: number) =>
   valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+const determinarStatus = (quantidade: number): Item["status"] => {
+  if (quantidade === 0) return "esgotado";
+  if (quantidade < 10) return "baixo estoque";
+  return "disponível";
+};
+
 export default function Inventario() {
+  const { usuario, carregando: carregandoAuth } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedInfo, setExpandedInfo] = useState<number | null>(null);
+  const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [editandoId, setEditandoId] = useState<string | null>(null);
   const [formItem, setFormItem] = useState<FormItem>(FORM_VAZIO);
-  const [items, setItems] = useState<Item[]>([
-    { id: 1, nome: "Produto A", quantidade: 150, categoria: "Eletrônicos", status: "disponível", precoCusto: 50, precoVenda: 80 },
-    { id: 2, nome: "Produto B", quantidade: 8, categoria: "Acessórios", status: "baixo estoque", precoCusto: 20, precoVenda: 25 },
-    { id: 3, nome: "Produto C", quantidade: 0, categoria: "Vestuário", status: "esgotado", precoCusto: 100, precoVenda: 90 },
-    { id: 4, nome: "Produto D", quantidade: 45, categoria: "Eletrônicos", status: "disponível", precoCusto: 30, precoVenda: 60 },
-    { id: 5, nome: "Produto E", quantidade: 12, categoria: "Decoração", status: "baixo estoque", precoCusto: 15, precoVenda: 35 },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+
+  useEffect(() => {
+    if (!carregandoAuth && !usuario) {
+      navigate("/login", { replace: true });
+    }
+  }, [carregandoAuth, usuario, navigate]);
+
+  useEffect(() => {
+    if (!usuario) return;
+    carregarItems();
+  }, [usuario]);
+
+  const carregarItems = async () => {
+    setCarregando(true);
+    const { data, error } = await supabase
+      .from("inventario")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setItems(data.map(row => ({
+        id: row.id,
+        nome: row.nome,
+        quantidade: row.quantidade,
+        precoCusto: Number(row.preco_custo),
+        precoVenda: Number(row.preco_venda),
+        status: determinarStatus(row.quantidade),
+      })));
+    }
+    setCarregando(false);
+  };
 
   const filteredItems = items.filter((item) =>
     item.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -72,24 +104,13 @@ export default function Inventario() {
     return ((item.precoVenda - item.precoCusto) / item.precoVenda) * 100;
   };
 
-  const determinarStatus = (quantidade: number): "disponível" | "baixo estoque" | "esgotado" => {
-    if (quantidade === 0) return "esgotado";
-    if (quantidade < 10) return "baixo estoque";
-    return "disponível";
-  };
-
-  // --- handlers de input com restrições no padrão brasileiro ---
-
   const handleQuantidade = (val: string) => {
     if (/^\d*$/.test(val)) setFormItem(prev => ({ ...prev, quantidade: val }));
   };
 
-  // Aceita dígitos, separador de milhar "." e vírgula decimal com até 2 casas
   const handlePreco = (val: string, field: "precoCusto" | "precoVenda") => {
     if (/^[\d.]*,?\d{0,2}$/.test(val)) setFormItem(prev => ({ ...prev, [field]: val }));
   };
-
-  // --- modal ---
 
   const abrirAdicao = () => {
     setEditandoId(null);
@@ -114,42 +135,69 @@ export default function Inventario() {
     setFormItem(FORM_VAZIO);
   };
 
-  const salvarItem = () => {
+  const salvarItem = async () => {
     if (!formItem.nome.trim()) {
       alert("Por favor, insira o nome do produto");
       return;
     }
 
     const quantidade = parseInt(formItem.quantidade || "0", 10);
-    const precoCusto = parseBR(formItem.precoCusto);
-    const precoVenda = parseBR(formItem.precoVenda);
+    const preco_custo = parseBR(formItem.precoCusto);
+    const preco_venda = parseBR(formItem.precoVenda);
 
-    if (editandoId !== null) {
-      setItems(prev => prev.map(i =>
-        i.id === editandoId
-          ? { ...i, nome: formItem.nome, quantidade, precoCusto, precoVenda, status: determinarStatus(quantidade) }
-          : i
-      ));
-    } else {
-      const novoId = items.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1;
-      setItems(prev => [...prev, {
-        id: novoId,
-        nome: formItem.nome,
-        quantidade,
-        categoria: "Geral",
-        status: determinarStatus(quantidade),
-        precoCusto,
-        precoVenda,
-      }]);
+    setSalvando(true);
+    try {
+      if (editandoId !== null) {
+        const { error } = await supabase
+          .from("inventario")
+          .update({ nome: formItem.nome.trim(), quantidade, preco_custo, preco_venda })
+          .eq("id", editandoId);
+
+        if (!error) {
+          setItems(prev => prev.map(i =>
+            i.id === editandoId
+              ? { ...i, nome: formItem.nome.trim(), quantidade, precoCusto: preco_custo, precoVenda: preco_venda, status: determinarStatus(quantidade) }
+              : i
+          ));
+        }
+      } else {
+        const { data, error } = await supabase
+          .from("inventario")
+          .insert({ user_id: usuario!.id, nome: formItem.nome.trim(), quantidade, preco_custo, preco_venda })
+          .select()
+          .single();
+
+        if (!error && data) {
+          setItems(prev => [{
+            id: data.id,
+            nome: data.nome,
+            quantidade: data.quantidade,
+            precoCusto: Number(data.preco_custo),
+            precoVenda: Number(data.preco_venda),
+            status: determinarStatus(data.quantidade),
+          }, ...prev]);
+        }
+      }
+    } finally {
+      setSalvando(false);
     }
 
     fecharModal();
   };
 
-  const excluirItem = (id: number) => {
+  const excluirItem = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este item?")) return;
+    await supabase.from("inventario").delete().eq("id", id);
     setItems(prev => prev.filter(i => i.id !== id));
   };
+
+  if (carregandoAuth || carregando) {
+    return (
+      <div className="size-full flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+        <Loader2 className="w-10 h-10 animate-spin text-pink-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="size-full bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 overflow-auto">
@@ -325,10 +373,10 @@ export default function Inventario() {
             ))}
           </div>
 
-          {filteredItems.length === 0 && (
+          {filteredItems.length === 0 && !carregando && (
             <div className="text-center py-12 text-gray-500">
               <Package className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>Nenhum item encontrado</p>
+              <p>{searchTerm ? "Nenhum item encontrado" : "Nenhum item cadastrado ainda"}</p>
             </div>
           )}
         </motion.div>
@@ -358,7 +406,6 @@ export default function Inventario() {
         </motion.div>
       </div>
 
-      {/* Modal adicionar / editar */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
@@ -377,14 +424,12 @@ export default function Inventario() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nome do Produto
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label>
                 <input
                   type="text"
                   value={formItem.nome}
                   onChange={(e) => setFormItem(prev => ({ ...prev, nome: e.target.value }))}
-                  placeholder="Ex: Produto F"
+                  placeholder="Ex: Feijão"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all"
                 />
               </div>
@@ -441,9 +486,10 @@ export default function Inventario() {
               </button>
               <button
                 onClick={salvarItem}
-                className="flex-1 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                disabled={salvando}
+                className="flex-1 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:scale-100"
               >
-                {editandoId !== null ? "Salvar" : "Adicionar"}
+                {salvando ? "Salvando..." : editandoId !== null ? "Salvar" : "Adicionar"}
               </button>
             </div>
           </motion.div>

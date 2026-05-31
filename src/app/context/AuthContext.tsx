@@ -1,54 +1,68 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import type { User } from "@supabase/supabase-js";
 
 interface Usuario {
+  id: string;
   nome: string;
   email: string;
 }
 
 interface AuthContextType {
   usuario: Usuario | null;
-  login: (email: string, senha: string) => boolean;
-  logout: () => void;
+  carregando: boolean;
+  login: (email: string, senha: string) => Promise<string | null>;
+  cadastrar: (nome: string, email: string, senha: string) => Promise<string | null>;
+  logout: () => Promise<void>;
 }
-
-const MOCK_USERS = [
-  { email: "joao@safraiz.com", senha: "123456", nome: "João Silva" },
-  { email: "maria@safraiz.com", senha: "senha123", nome: "Maria Oliveira" },
-  { email: "demo@safraiz.com", senha: "demo123", nome: "Usuário Demo" },
-];
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [usuario, setUsuario] = useState<Usuario | null>(() => {
-    try {
-      const salvo = localStorage.getItem("safraiz_usuario");
-      return salvo ? JSON.parse(salvo) : null;
-    } catch {
-      return null;
-    }
-  });
+function usuarioFromSupabase(user: User): Usuario {
+  return {
+    id: user.id,
+    nome: user.user_metadata?.nome ?? user.email?.split("@")[0] ?? "Usuário",
+    email: user.email ?? "",
+  };
+}
 
-  const login = (email: string, senha: string): boolean => {
-    const encontrado = MOCK_USERS.find(
-      (u) => u.email === email.trim().toLowerCase() && u.senha === senha
-    );
-    if (encontrado) {
-      const user: Usuario = { nome: encontrado.nome, email: encontrado.email };
-      setUsuario(user);
-      localStorage.setItem("safraiz_usuario", JSON.stringify(user));
-      return true;
-    }
-    return false;
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUsuario(session?.user ? usuarioFromSupabase(session.user) : null);
+      setCarregando(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUsuario(session?.user ? usuarioFromSupabase(session.user) : null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, senha: string): Promise<string | null> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    return error ? error.message : null;
   };
 
-  const logout = () => {
-    setUsuario(null);
-    localStorage.removeItem("safraiz_usuario");
+  const cadastrar = async (nome: string, email: string, senha: string): Promise<string | null> => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: senha,
+      options: { data: { nome } },
+    });
+    return error ? error.message : null;
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, carregando, login, cadastrar, logout }}>
       {children}
     </AuthContext.Provider>
   );
