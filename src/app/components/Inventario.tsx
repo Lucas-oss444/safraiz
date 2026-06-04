@@ -151,7 +151,8 @@ export default function Inventario() {
         const { error } = await supabase
           .from("inventario")
           .update({ nome: formItem.nome.trim(), quantidade, preco_custo, preco_venda })
-          .eq("id", editandoId);
+          .eq("id", editandoId)
+          .eq("user_id", usuario!.id);
 
         if (!error) {
           setItems(prev => prev.map(i =>
@@ -187,7 +188,7 @@ export default function Inventario() {
 
   const excluirItem = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este item?")) return;
-    await supabase.from("inventario").delete().eq("id", id);
+    await supabase.from("inventario").delete().eq("id", id).eq("user_id", usuario!.id);
     setItems(prev => prev.filter(i => i.id !== id));
   };
 
