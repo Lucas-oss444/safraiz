@@ -1,4 +1,4 @@
-import { ZoomIn, ZoomOut, Moon, Sun, Menu, Settings, X, ChevronRight, LayoutDashboard, Home as HomeIcon } from "lucide-react";
+import { ZoomIn, ZoomOut, Moon, Sun, Menu, Settings, X, ChevronRight, LayoutDashboard, Home as HomeIcon, Keyboard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 
@@ -52,22 +52,25 @@ export default function BarraAcessibilidade({
 
       {/* Desktop Accessibility Bar */}
       <div className={`hidden md:flex fixed top-0 left-0 right-0 ${menuClass} px-6 py-3 z-50 shadow-lg justify-between items-center`} id="menu-principal">
-        <div className="absolute top-1/2 left-2 transform -translate-y-1/2 hidden md:block">
-          <div className="bg-pink-100 text-black text-xs p-2 rounded shadow-lg border border-pink-300 w-48 z-[101]">
-            Anotação eMAG: <br/>
-            Alt+1 (Conteúdo)<br/>
-            Alt+2 (Menu)<br/>
-            Alt+3 (Busca)<br/>
-            Alt+4 (Rodapé)<br/>
-            DOM: Ordem visual de cima para baixo.
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-6 ml-56">
+        <div className="flex items-center">
           <span className="text-sm font-medium">Ferramentas de Acessibilidade</span>
         </div>
 
         <div className="flex items-center gap-4">
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors focus:ring-4 focus:ring-yellow-400" aria-label="Atalhos de teclado">
+              <Keyboard className="w-4 h-4" alt="" />
+              <span className="text-sm">Atalhos</span>
+            </button>
+            <div className="absolute top-full right-0 mt-2 w-56 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-xl opacity-0 group-hover:opacity-100 focus-within:opacity-100 pointer-events-none transition-opacity z-[101] border border-gray-700 hidden md:block">
+              <strong>Anotação eMAG:</strong><br/>
+              Alt+1 (Conteúdo)<br/>
+              Alt+2 (Menu)<br/>
+              Alt+3 (Busca)<br/>
+              Alt+4 (Rodapé)<br/>
+              DOM: Ordem visual de cima para baixo.
+            </div>
+          </div>
           <button id="busca" className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors focus:ring-4 focus:ring-yellow-400" aria-label="Buscar no site">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <span className="text-sm">Busca</span>
@@ -106,18 +109,7 @@ export default function BarraAcessibilidade({
 
       {/* Mobile Header (replaces standard header on small screens) */}
       <div className={`md:hidden fixed top-0 left-0 right-0 h-16 ${menuClass} z-50 flex items-center justify-between px-4 shadow-md`}>
-        <div className="absolute top-1/2 left-2 transform -translate-y-1/2 md:hidden">
-          <div className="bg-yellow-100 text-black text-xs p-2 rounded shadow-lg border border-yellow-300 w-48 z-[101]">
-            Anotação eMAG: <br/>
-            Alt+1 (Conteúdo)<br/>
-            Alt+2 (Menu)<br/>
-            Alt+3 (Busca)<br/>
-            Alt+4 (Rodapé)<br/>
-            DOM: Ordem visual de cima para baixo.
-          </div>
-        </div>
-
-        <button 
+        <button
           onClick={() => setIsMobileMenuOpen(true)}
           className="p-3 -ml-3 flex items-center justify-center focus:ring-4 focus:ring-yellow-400 rounded-lg min-w-[44px] min-h-[44px]"
           aria-label="Abrir menu de navegação"
